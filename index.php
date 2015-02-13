@@ -1,4 +1,5 @@
 <?php 
+include("parsedown/Parsedown.php");
 date_default_timezone_set('Asia/Taipei');
 
 /** The array which we'll store the diays later */
@@ -43,7 +44,7 @@ EOF;
 }
 
 
-
+$markdown_parser = new Parsedown();
 
 /**
  * Scan 
@@ -63,6 +64,10 @@ foreach(glob(__DIR__ . '/diary/*') as $Diary)
 
     /** Get the content */
     switch ($extension) {
+        case 'md':
+        case 'markdown':
+            $Content = $markdown_parser->text(file_get_contents($Diary));
+            break;
         case 'txt':
         case 'text':
             $Content = nl2br(file_get_contents($Diary));
