@@ -51,14 +51,27 @@ EOF;
  * Get all the diary files
  */
 
-foreach(glob(__DIR__ . '/diary/*.txt') as $Diary)
+foreach(glob(__DIR__ . '/diary/*') as $Diary)
 {
     /** The file name is the title of this diary */
-    /** Now we remove the path first, then we remove the file extension */
-    $Title = preg_replace('/\.\w*$/', '', preg_replace('/^.+[\\\\\\/]/', '', $Diary));
+    $info = pathinfo($Diary);
+    $extension = $info['extension'];
+
+    $Title = $info['filename'];
     
+    $Content = null;
+
     /** Get the content */
-    $Content = nl2br(file_get_contents($Diary));
+    switch ($extension) {
+        case 'txt':
+        case 'text':
+            $Content = nl2br(file_get_contents($Diary));
+            break;
+    }
+
+    if ($Content === null) {
+        continue; // Skip invalid file type
+    }
     
     /** Get the unix timestramp of the file */
     $Date = filemtime($Diary);
